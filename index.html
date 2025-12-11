@@ -174,11 +174,11 @@
 
             <!-- Botones -->
             <div class="grid grid-cols-1 gap-3 mb-8">
-                 <button id="send-offer-btn" class="w-full bg-cta-red-500 hover:bg-cta-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 mb-3">
+                   <button id="send-offer-btn" class="w-full bg-cta-red-500 hover:bg-cta-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 mb-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V5"></path></svg>
                     <span>COPIAR COMPARATIVO</span>
                 </button>
-                 <button onclick="document.getElementById('details-container').classList.toggle('hidden')" class="text-center text-drk-800 font-bold text-sm hover:underline flex items-center justify-center gap-1">
+                   <button onclick="document.getElementById('details-container').classList.toggle('hidden')" class="text-center text-drk-800 font-bold text-sm hover:underline flex items-center justify-center gap-1">
                     Ver desglose detallado del cálculo
                 </button>
             </div>
@@ -395,7 +395,7 @@
                 const url = urlsToTry[i];
                 try {
                     if (i > 0) {
-                         els.loadingStatus.textContent = "Reintentando carga de tarifas...";
+                           els.loadingStatus.textContent = "Reintentando carga de tarifas...";
                     }
                     const loaded = await fetchAndParse(url);
                     currentTariffs = loaded;
@@ -701,10 +701,11 @@
             }
         }
         
-        // --- FUNCIÓN GENERATESTYLEDHTMLOFFER (Genera el contenido HTML/Mailto para el botón de copia) ---
+        // --- FUNCIÓN GENERATESTYLEDHTMLOFFER (MODIFICADA PARA APPLE MAIL) ---
         function generateStyledHtmlOffer(commercialCode) {
             const bd = lastComparisonResult;
             const offer = bd.offer;
+            // Formateadores para el contenido del email copiado
             const eur = (n) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n);
             const num = (n, d=2) => new Intl.NumberFormat('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
             const numPriceFormula = (n) => new Intl.NumberFormat('es-ES', { minimumFractionDigits: 6, maximumFractionDigits: 6 }).format(n);
@@ -715,17 +716,19 @@
             const BLUE_CTA = '#0284c7';
             const RED_CTA = '#CC0000';
             const BG_LIGHT = '#f0f9ff';
+            const GREEN_SAVE = '#16a34a';
 
             // Capturar datos del modal o usar placeholders
             const clientName = els.clientNameInput.value.trim() || '[NOMBRE COMPLETO CLIENTE]';
             const clientPhone = els.clientPhoneInput.value.trim() || '[TELÉFONO CLIENTE]';
             const clientEmail = els.clientEmailInput.value.trim() || '[EMAIL CLIENTE]';
 
+            // Estilos generales de tabla y celda (CRUCIAL: Usar píxeles y estilos inline para compatibilidad con email)
             const tableMain = `width: 600px; max-width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; border: 1px solid #ddd; margin: 0 auto; background: white;`;
             const headerCell = `background-color: ${BLUE_DARK}; color: white; padding: 15px; text-align: center;`;
             const sectionTitle = `background-color: ${BLUE_MED}; color: white; font-weight: bold; padding: 8px; font-size: 14px; margin-top: 10px;`;
-            const rowLabel = `padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; color: #555;`;
-            const rowValue = `padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; font-weight: bold; color: #333; text-align: right;`;
+            const rowLabel = `padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; color: #555; vertical-align: top;`;
+            const rowValue = `padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; font-weight: bold; color: #333; text-align: right; white-space: nowrap; vertical-align: top;`; // white-space: nowrap para evitar rotura de cifras
             const savingsBox = `background-color: ${BLUE_CTA}; color: white; font-size: 20px; font-weight: bold; padding: 15px; text-align: center; border-radius: 8px; margin: 15px 0;`;
             const btnStyle = `display: inline-block; background-color: ${RED_CTA}; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; margin: 20px 0; font-size: 16px;`;
             const footerStyle = `background-color: ${BLUE_MED}; height: 5px; margin-top: 10px; border-radius: 0 0 8px 8px;`;
@@ -742,38 +745,38 @@
             const e3Price = numPriceFormula(offer.p3_price);
 
             const emailBody = `Hola DRK, confirmo la aceptación de la oferta con CUPS: ${bd.cups}.${LB}${LB}` +
-                              `--- DATOS DE LA OFERTA ---${LB}${LB}` +
-                              `Comercializadora y Tarifa: DRK ENERGÍA - ${offer.name}${LB}` +
-                              `Zona Geográfica: PENINSULA${LB}` +
-                              `Ahorro Anual Estimado: ${eur(bd.savings)}${LB}` +
-                              `Total Mensual Estimado: ${monthlyEstimate}${LB}` +
-                              `Consumo Total Facturado: ${totalConsumption}${LB}${LB}` +
-                              `--- DETALLE DE PRECIOS (€) ---${LB}` +
-                              `P1 (Potencia - €/kW/día): ${p1PricePerDay}${LB}` +
-                              `P2 (Potencia - €/kW/día): ${p2PricePerDay}${LB}` +
-                              `E1 (Energía - €/kWh): ${e1Price}${LB}` +
-                              `E2 (Energía - €/kWh): ${e2Price}${LB}` +
-                              `E3 (Energía - €/kWh): ${e3Price}${LB}` +
-                              `------------------------------${LB}${LB}` +
-                              `Por favor, utilicen los siguientes datos para tramitar mi cambio:${LB}` +
-                              `--------------------------------------------------------${LB}` +
-                              `DATOS DEL CLIENTE (A RELLENAR):${LB}` +
-                              `--------------------------------------------------------${LB}` +
-                              `Nombre completo: ${clientName}${LB}` +
-                              `Teléfono de contacto: ${clientPhone}${LB}` +
-                              `Email de contacto: ${clientEmail}${LB}${LB}` +
-                              `--------------------------------------------------------${LB}` +
-                              `INFORMACIÓN ADICIONAL (Opcional):${LB}` +
-                              `--------------------------------------------------------${LB}` +
-                              `[AGREGUE CUALQUIER COMENTARIO EXTRA AQUÍ]${LB}${LB}` +
-                              `--- DOCUMENTACIÓN REQUERIDA ---${LB}` +
-                              `Para formalizar el contrato, por favor, responde a este email adjuntando:${LB}` +
-                              `1. Foto del DNI/CIF (anverso y reverso).${LB}` +
-                              `2. Última factura (mínimo 3 meses de antigüedad).${LB}` +
-                              `3. Email de contacto para validación.${LB}` +
-                              `4. Teléfono de contacto.${LB}` +
-                              `5. Número de cuenta bancaria (IBAN).${LB}${LB}` +
-                              `Adjunto la documentación requerida.`;
+                                `--- DATOS DE LA OFERTA ---${LB}${LB}` +
+                                `Comercializadora y Tarifa: DRK ENERGÍA - ${offer.name}${LB}` +
+                                `Zona Geográfica: PENINSULA${LB}` +
+                                `Ahorro Anual Estimado: ${eur(bd.savings)}${LB}` +
+                                `Total Mensual Estimado: ${monthlyEstimate}${LB}` +
+                                `Consumo Total Facturado: ${totalConsumption}${LB}${LB}` +
+                                `--- DETALLE DE PRECIOS (€) ---${LB}` +
+                                `P1 (Potencia - €/kW/día): ${p1PricePerDay}${LB}` +
+                                `P2 (Potencia - €/kW/día): ${p2PricePerDay}${LB}` +
+                                `E1 (Energía - €/kWh): ${e1Price}${LB}` +
+                                `E2 (Energía - €/kWh): ${e2Price}${LB}` +
+                                `E3 (Energía - €/kWh): ${e3Price}${LB}` +
+                                `------------------------------${LB}${LB}` +
+                                `Por favor, utilicen los siguientes datos para tramitar mi cambio:${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `DATOS DEL CLIENTE (A RELLENAR):${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `Nombre completo: ${clientName}${LB}` +
+                                `Teléfono de contacto: ${clientPhone}${LB}` +
+                                `Email de contacto: ${clientEmail}${LB}${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `INFORMACIÓN ADICIONAL (Opcional):${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `[AGREGUE CUALQUIER COMENTARIO EXTRA AQUÍ]${LB}${LB}` +
+                                `--- DOCUMENTACIÓN REQUERIDA ---${LB}` +
+                                `Para formalizar el contrato, por favor, responde a este email adjuntando:${LB}` +
+                                `1. Foto del DNI/CIF (anverso y reverso).${LB}` +
+                                `2. Última factura (mínimo 3 meses de antigüedad).${LB}` +
+                                `3. Email de contacto para validación.${LB}` +
+                                `4. Teléfono de contacto.${LB}` +
+                                `5. Número de cuenta bancaria (IBAN).${LB}${LB}` +
+                                `Adjunto la documentación requerida.`;
 
 
             const subject = `ACEPTACIÓN OFERTA`; 
@@ -799,7 +802,7 @@
                         <!-- RESULTADO POSITIVO DE NO AHORRO -->
                         <tr><td colspan="2" style="background-color: #e0f2fe; padding: 25px 20px; text-align: center; border-top: 2px solid ${BLUE_MED}; border-bottom: 2px solid ${BLUE_MED};">
                             <div style="font-size: 60px; color: ${BLUE_CTA}; margin-bottom: 10px;">
-                                <span style="display: inline-block;">✅</span>
+                                <span style="display: inline-block;">&#9989;</span>
                             </div>
                             <p style="margin: 0; color: ${BLUE_DARK}; font-size: 22px; font-weight: bold;">¡Excelente Noticia!</p>
                             <h2 style="margin: 5px 0 10px 0; color: ${BLUE_DARK}; font-size: 18px; font-weight: normal;">TU TARIFA ACTUAL ES LA MÁS COMPETITIVA DEL MERCADO</h2>
@@ -809,7 +812,7 @@
                         <!-- ESTADO ACTUAL (Destacado) -->
                         <tr><td colspan="2" style="padding: 20px; text-align: center;">
                             <p style="font-size: 14px; font-weight: bold; color: ${BLUE_DARK}; margin-bottom: 5px;">COSTE ANUAL ESTIMADO (ACTUAL):</p>
-                            <span style="font-size: 32px; font-weight: bold; color: #16a34a; display: block;">${eur(bd.originalBillAnnual)}</span>
+                            <span style="font-size: 32px; font-weight: bold; color: ${GREEN_SAVE}; display: block;">${eur(bd.originalBillAnnual)}</span>
                             <p style="font-size: 12px; color: #888;">/ AÑO</p>
                             <p style="margin-top: 15px; font-size: 14px; color: #555;">[Colaborador: ${commercialCode}] | Este resumen es una simulación basada en su última factura.</p>
                         </td></tr>
@@ -825,41 +828,41 @@
             const desgloseRows = `
                 <!-- TÉRMINO POTENCIA -->
                 <tr><td colspan="2"><div style="font-weight: bold; color: ${BLUE_MED}; padding: 5px 0 2px 0;">TÉRMINO POTENCIA (Precio en €/kW Día)</div></td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P1 (${num(bd.potencia_p1_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP1Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costP1, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P2 (${num(bd.potencia_p2_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP2Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costP2, 2)} €</td></tr>
+                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P1 (${num(bd.potencia_p1_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP1Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px; white-space: nowrap;">${num(bd.costP1, 2)} €</td></tr>
+                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P2 (${num(bd.potencia_p2_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP2Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px; white-space: nowrap;">${num(bd.costP2, 2)} €</td></tr>
                 
                 <!-- TÉRMINO ENERGÍA -->
                 <tr><td colspan="2"><div style="font-weight: bold; color: ${BLUE_MED}; padding: 5px 0 2px 0;">TÉRMINO ENERGÍA (Precios en €/kWh)</div></td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E1 (${num(bd.consumo_punta,0)} kWh x ${numPriceFormula(offer.p1_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE1, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E2 (${num(bd.consumo_llano,0)} kWh x ${numPriceFormula(offer.p2_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE2, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E3 (${num(bd.consumo_valle,0)} kWh x ${numPriceFormula(offer.p3_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE3, 2)} €</td></tr>
+                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E1 (${num(bd.consumo_punta,0)} kWh x ${numPriceFormula(offer.p1_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px; white-space: nowrap;">${num(bd.costE1, 2)} €</td></tr>
+                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E2 (${num(bd.consumo_llano,0)} kWh x ${numPriceFormula(offer.p2_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px; white-space: nowrap;">${num(bd.costE2, 2)} €</td></tr>
+                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E3 (${num(bd.consumo_valle,0)} kWh x ${numPriceFormula(offer.p3_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px; white-space: nowrap;">${num(bd.costE3, 2)} €</td></tr>
                 
                 <!-- SUBTOTALES E IMPUESTOS -->
-                <tr><td style="${rowLabel} border-top: 2px solid #333; font-weight: bold; color: ${BLUE_DARK};">SUBTOTAL (P+E)</td><td style="${rowValue} border-top: 2px solid #333; font-weight: bold; color: ${BLUE_DARK};">${num(bd.subBase, 2)} €</td></tr>
-                <tr><td style="${rowLabel}">Impuesto Eléc. (${num(bd.IE_RATE * 100, 3)}%)</td><td style="${rowValue}">${num(bd.costIE, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-weight: bold;">BASE IMPONIBLE</td><td style="${rowValue} font-weight: bold;">${num(bd.baseImp, 2)} €</td></tr>
-                <tr><td style="${rowLabel}">IVA (21%)</td><td style="${rowValue}">${num(bd.costIVA, 2)} €</td></tr>
+                <tr><td style="${rowLabel} border-top: 2px solid #333; font-weight: bold; color: ${BLUE_DARK};">SUBTOTAL (P+E)</td><td style="${rowValue} border-top: 2px solid #333; font-weight: bold; color: ${BLUE_DARK}; white-space: nowrap;">${num(bd.subBase, 2)} €</td></tr>
+                <tr><td style="${rowLabel}">Impuesto Eléc. (${num(bd.IE_RATE * 100, 3)}%)</td><td style="${rowValue} white-space: nowrap;">${num(bd.costIE, 2)} €</td></tr>
+                <tr><td style="${rowLabel} font-weight: bold;">BASE IMPONIBLE</td><td style="${rowValue} font-weight: bold; white-space: nowrap;">${num(bd.baseImp, 2)} €</td></tr>
+                <tr><td style="${rowLabel}">IVA (21%)</td><td style="${rowValue} white-space: nowrap;">${num(bd.costIVA, 2)} €</td></tr>
                 
                 <!-- TOTALES FINALES (TOTAL MES Y TOTAL AÑO) -->
-                <tr><td style="${rowLabel} background-color: #eee; font-weight: bold;">TOTAL MES (PERIODO FACTURADO - ${bd.dias_facturados} DÍAS)</td><td style="${rowValue} background-color: #eee; font-size: 16px;">${eur(bd.totalPeriod)}</td></tr>
+                <tr><td style="${rowLabel} background-color: #eee; font-weight: bold;">TOTAL MES (PERIODO FACTURADO - ${bd.dias_facturados} DÍAS)</td><td style="${rowValue} background-color: #eee; font-size: 16px; white-space: nowrap;">${eur(bd.totalPeriod)}</td></tr>
                  <!-- LÍNEA DE TOTAL AÑO -->
-                <tr><td style="${rowLabel} background-color: #eee; font-weight: bold;">TOTAL AÑO (PROYECTADO)</td><td style="${rowValue} background-color: #eee; font-size: 16px;">${eur(bd.totalAnnual)}</td></tr>
+                <tr><td style="${rowLabel} background-color: #eee; font-weight: bold;">TOTAL AÑO (PROYECTADO)</td><td style="${rowValue} background-color: #eee; font-size: 16px; white-space: nowrap;">${eur(bd.totalAnnual)}</td></tr>
             `;
             
             const preciosResumenTable = `
                 <tr><td colspan="2"><div style="${sectionTitle}">RESUMEN DE PRECIOS DE LA OFERTA ÚNICA</div></td></tr>
                 <tr><td colspan="2" style="padding: 0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; font-size: 12px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; font-size: 12px; table-layout: fixed;">
                         <tr style="background-color: #f5f5f5;">
-                            <th style="padding: 5px 8px; text-align: left; color: ${BLUE_DARK};">CONCEPTO</th>
-                            <th style="padding: 5px 8px; text-align: right; color: ${BLUE_DARK};">DRK ENERGÍA</th>
+                            <th style="padding: 5px 8px; text-align: left; color: ${BLUE_DARK}; width: 60%;">CONCEPTO</th>
+                            <th style="padding: 5px 8px; text-align: right; color: ${BLUE_DARK}; width: 40%;">DRK ENERGÍA</th>
                         </tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Potencia P1 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">${numPriceFormula(bd.priceP1Day)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Potencia P2 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">${numPriceFormula(bd.priceP2Day)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Energía E1 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">${numPriceFormula(offer.p1_price)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Energía E2 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">${numPriceFormula(offer.p2_price)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Energía E3 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">${numPriceFormula(offer.p3_price)}</td></tr>
-                        <tr style="background-color: ${BG_LIGHT}; font-weight: bold;"><td style="padding: 8px; color: ${BLUE_DARK};">AHORRO ANUAL</td><td style="padding: 8px; text-align: right; font-size: 14px; color: ${BLUE_CTA};">${eur(bd.savings)}</td></tr>
+                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Potencia P1 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold; white-space: nowrap;">${numPriceFormula(bd.priceP1Day)}</td></tr>
+                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Potencia P2 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold; white-space: nowrap;">${numPriceFormula(bd.priceP2Day)}</td></tr>
+                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Energía E1 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold; white-space: nowrap;">${numPriceFormula(offer.p1_price)}</td></tr>
+                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Energía E2 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold; white-space: nowrap;">${numPriceFormula(offer.p2_price)}</td></tr>
+                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eee;">Energía E3 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold; white-space: nowrap;">${numPriceFormula(offer.p3_price)}</td></tr>
+                        <tr style="background-color: ${BG_LIGHT}; font-weight: bold;"><td style="padding: 8px; color: ${BLUE_DARK};">AHORRO ANUAL</td><td style="padding: 8px; text-align: right; font-size: 14px; color: ${BLUE_CTA}; white-space: nowrap;">${eur(bd.savings)}</td></tr>
                         <!-- ESPACIO SOLICITADO -->
                         <tr style="background-color: white; height: 10px;"><td colspan="2"></td></tr>
                     </table>
@@ -873,7 +876,7 @@
                     </div>
                     <div style="background-color: ${BG_LIGHT}; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
                         <p style="margin: 0; font-size: 14px; color: #555;">TU AHORRO ANUAL ESTIMADO ES:</p>
-                        <span style="font-size: 32px; font-weight: bold; color: ${BLUE_CTA}; display: block; margin-top: 5px;">${eur(bd.savings)}</span>
+                        <span style="font-size: 32px; font-weight: bold; color: ${BLUE_CTA}; display: block; margin-top: 5px; white-space: nowrap;">${eur(bd.savings)}</span>
                     </div>
                 </td></tr>
             `;
@@ -897,7 +900,7 @@
                     <!-- TARIFA GANADORA -->
                     <tr><td colspan="2" style="background-color: ${BG_LIGHT}; padding: 15px; text-align: center; border-top: 2px solid ${BLUE_MED}; border-bottom: 2px solid ${BLUE_MED};">
                         <p style="margin: 0; color: ${BLUE_MED}; font-size: 12px; font-weight: bold; letter-spacing: 1px;">LA MEJOR OPCIÓN PARA TI ES</p>
-                        <h2 style="margin: 5px 0 0 0; color: ${BLUE_DARK}; font-size: 22px;">${offer.name}</h2>
+                        <h2 style="margin: 5px 0 0 0; color: ${BLUE_DARK}; font-size: 22px;">DRK Energía</h2>
                     </td></tr>
 
                     <!-- 1. AHORRO (RESUMEN POTENTE INICIAL) -->
@@ -906,25 +909,25 @@
                             <p style="margin: 0; font-size: 16px; color: #555; font-weight: bold;">TU AHORRO ANUAL ESTIMADO ES:</p>
                         </div>
                         <div style="${savingsBox}">
-                            <span style="font-size: 38px;">${eur(bd.savings)}</span>
+                            <span style="font-size: 38px; white-space: nowrap;">${eur(bd.savings)}</span>
                             <p style="margin: 5px 0 0 0; font-size: 18px; font-weight: bold;">¡CONSIGUE TU AHORRO ANUAL!</p>
                         </div>
                     </td></tr>
 
                     <!-- 2. COMPARATIVA (Factura Actual vs. Nuevo Coste DRK) -->
                     <tr><td colspan="2" style="padding: 0 20px;">
-                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px; table-layout: fixed;">
                             <tr>
                                 <td style="width: 50%; padding: 15px; background-color: #f9fafb; border: 1px solid #ddd; text-align: center; vertical-align: top;">
                                     <div style="font-size: 11px; font-weight: bold; color: #888; text-transform: uppercase;">TU FACTURA ACTUAL</div>
-                                    <div style="font-size: 20px; font-weight: bold; color: #ef4444; margin: 5px 0; text-decoration: line-through;">${eur(bd.originalBillAnnual)}</div>
+                                    <div style="font-size: 20px; font-weight: bold; color: #ef4444; margin: 5px 0; text-decoration: line-through; white-space: nowrap;">${eur(bd.originalBillAnnual)}</div>
                                     <div style="font-size: 11px; color: #666;">/ AÑO</div>
                                 </td>
                                 <td style="width: 50%; padding: 15px; background-color: ${BG_LIGHT}; border: 1px solid ${BLUE_MED}; text-align: center; vertical-align: top;">
                                     <div style="font-size: 11px; font-weight: bold; color: ${BLUE_MED}; text-transform: uppercase;">TU NUEVO COSTE DRK</div>
-                                    <div style="font-size: 24px; font-weight: bold; color: ${BLUE_DARK}; margin: 5px 0;">${eur(bd.totalAnnual)}</div>
+                                    <div style="font-size: 24px; font-weight: bold; color: ${BLUE_DARK}; margin: 5px 0; white-space: nowrap;">${eur(bd.totalAnnual)}</div>
                                     <div style="font-size: 11px; color: ${BLUE_MED};">/ AÑO</div>
-                                    <div style="font-size: 13px; font-weight: bold; color: ${BLUE_DARK}; margin-top: 5px;">${eur(bd.totalAnnual/12)} / MES</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: ${BLUE_DARK}; margin-top: 5px; white-space: nowrap;">${eur(bd.totalAnnual/12)} / MES</div>
                                 </td>
                             </tr>
                         </table>
@@ -936,7 +939,7 @@
                     <!-- 4. DESGLOSE DETALLADO -->
                     <tr><td colspan="2"><div style="${sectionTitle}">DESGLOSE DETALLADO DE LA SIMULACIÓN (${offer.name})</div></td></tr>
                     <tr><td colspan="2" style="padding: 0 20px;">
-                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 10px; margin-bottom: 20px;">
+                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 10px; margin-bottom: 20px; table-layout: fixed;">
                             ${desgloseRows}
                         </table>
                     </td></tr>
