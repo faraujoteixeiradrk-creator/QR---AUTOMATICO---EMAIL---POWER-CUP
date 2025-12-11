@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -790,7 +792,7 @@
                   </v:roundrect>
                 <![endif]-->
                 <!--[if !mso]><!-->
-                <table cellspacing="0" cellpadding="0" border="0" style="width: 100%; border-collapse: collapse;">
+                <table cellspacing="0" cellpadding="0" border="0" style="width: 100%; border-collapse: collapse;" role="presentation">
                     <tr>
                         <td align="center" style="background-color: ${RED_CTA}; border-radius: 6px; padding: 0; margin: 0; ">
                             <a href="${link}" target="_blank" style="${btnAnchorStyle}">
@@ -804,110 +806,45 @@
 
             const CTA_SECTION = VML_BUTTON(formalizationLink, 'QUIERO LA OFERTA');
 
-            // --- TEMPLATE AHORRO NEGATIVO ---
-            if (bd.isNegativeSavings) {
-                return `
-                    <table cellpadding="0" cellspacing="0" border="0" style="${tableMain}">
-                        <!-- HEADER (DRK Theme) -->
-                        <tr><td colspan="2" style="${headerCell}">
-                            <h1 style="margin:0; font-size: 24px;">ESTUDIO DE AHORRO</h1>
-                            <p style="margin:5px 0 0 0; font-size: 14px; opacity: 0.9;">COMPARATIVA PROFESIONAL - DRK ENERGÍA</p>
-                        </td></tr>
-                        
-                        <!-- DATOS CLIENTE -->
-                        <tr><td colspan="2" style="padding: 15px;">
-                            <p style="margin: 0; font-size: 13px; font-family: Arial, sans-serif;"><strong>CLIENTE:</strong> ${clientName}</p>
-                            <p style="margin: 5px 0 0 0; font-size: 13px; font-family: Arial, sans-serif;"><strong>CUPS:</strong> ${bd.cups}</p>
-                            <p style="margin: 5px 0 0 0; font-size: 13px; font-family: Arial, sans-serif;"><strong>COMERCIAL:</strong> ${commercialCode || 'N/A'}</p>
-                        </td></tr>
+            // --- CUERPO DE LA TABLA PRINCIPAL (PARA EL HTML COMPLETO) ---
+            const mainTableContent = bd.isNegativeSavings ? `
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="${tableMain} mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important;" role="presentation">
+                    <!-- HEADER (DRK Theme) -->
+                    <tr><td colspan="2" style="${headerCell}">
+                        <h1 style="margin:0; font-size: 24px;">ESTUDIO DE AHORRO</h1>
+                        <p style="margin:5px 0 0 0; font-size: 14px; opacity: 0.9;">COMPARATIVA PROFESIONAL - DRK ENERGÍA</p>
+                    </td></tr>
+                    
+                    <!-- DATOS CLIENTE -->
+                    <tr><td colspan="2" style="padding: 15px;">
+                        <p style="margin: 0; font-size: 13px; font-family: Arial, sans-serif;"><strong>CLIENTE:</strong> ${clientName}</p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; font-family: Arial, sans-serif;"><strong>CUPS:</strong> ${bd.cups}</p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; font-family: Arial, sans-serif;"><strong>COMERCIAL:</strong> ${commercialCode || 'N/A'}</p>
+                    </td></tr>
 
-                        <!-- RESULTADO POSITIVO DE NO AHORRO -->
-                        <tr><td colspan="2" style="background-color: #e0f2fe; padding: 25px 20px; text-align: center; border-top: 2px solid ${BLUE_MED}; border-bottom: 2px solid ${BLUE_MED};">
-                            <div style="font-size: 60px; color: ${BLUE_CTA}; margin-bottom: 10px;">
-                                <span style="display: inline-block;">✅</span>
-                            </div>
-                            <p style="margin: 0; color: ${BLUE_DARK}; font-size: 22px; font-weight: bold; font-family: Arial, sans-serif;">¡Excelente Noticia!</p>
-                            <h2 style="margin: 5px 0 10px 0; color: ${BLUE_DARK}; font-size: 18px; font-weight: normal; font-family: Arial, sans-serif;">TU TARIFA ACTUAL ES LA MÁS COMPETITIVA DEL MERCADO</h2>
-                            <p style="margin: 0; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">En este momento, no existe una oferta que mejore tu coste actual, lo que confirma que tienes una tarifa muy competitiva. Seguiremos estudiando.</p>
-                        </td></tr>
+                    <!-- RESULTADO POSITIVO DE NO AHORRO -->
+                    <tr><td colspan="2" style="background-color: #e0f2fe; padding: 25px 20px; text-align: center; border-top: 2px solid ${BLUE_MED}; border-bottom: 2px solid ${BLUE_MED};">
+                        <div style="font-size: 60px; color: ${BLUE_CTA}; margin-bottom: 10px;">
+                            <span style="display: inline-block;">✅</span>
+                        </div>
+                        <p style="margin: 0; color: ${BLUE_DARK}; font-size: 22px; font-weight: bold; font-family: Arial, sans-serif;">¡Excelente Noticia!</p>
+                        <h2 style="margin: 5px 0 10px 0; color: ${BLUE_DARK}; font-size: 18px; font-weight: normal; font-family: Arial, sans-serif;">TU TARIFA ACTUAL ES LA MÁS COMPETITIVA DEL MERCADO</h2>
+                        <p style="margin: 0; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">En este momento, no existe una oferta que mejore tu coste actual, lo que confirma que tienes una tarifa muy competitiva. Seguiremos estudiando.</p>
+                    </td></tr>
 
-                        <!-- ESTADO ACTUAL (Destacado) -->
-                        <tr><td colspan="2" style="padding: 20px; text-align: center;">
-                            <p style="font-size: 14px; font-weight: bold; color: ${BLUE_DARK}; margin-bottom: 5px; font-family: Arial, sans-serif;">COSTE ANUAL ESTIMADO (ACTUAL):</p>
-                            <span style="font-size: 32px; font-weight: bold; color: ${GREEN_SAVE}; display: block; font-family: Arial, sans-serif;">${eur(bd.originalBillAnnual)}</span>
-                            <p style="font-size: 12px; color: #888888; font-family: Arial, sans-serif;">/ AÑO</p>
-                            <p style="margin-top: 15px; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">[Colaborador: ${commercialCode}] | Este resumen es una simulación basada en su última factura.</p>
-                        </td></tr>
+                    <!-- ESTADO ACTUAL (Destacado) -->
+                    <tr><td colspan="2" style="padding: 20px; text-align: center;">
+                        <p style="font-size: 14px; font-weight: bold; color: ${BLUE_DARK}; margin-bottom: 5px; font-family: Arial, sans-serif;">COSTE ANUAL ESTIMADO (ACTUAL):</p>
+                        <span style="font-size: 32px; font-weight: bold; color: ${GREEN_SAVE}; display: block; font-family: Arial, sans-serif;">${eur(bd.originalBillAnnual)}</span>
+                        <p style="font-size: 12px; color: #888888; font-family: Arial, sans-serif;">/ AÑO</p>
+                        <p style="margin-top: 15px; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">[Colaborador: ${commercialCode}] | Este resumen es una simulación basada en su última factura.</p>
+                    </td></tr>
 
-                        <!-- FOOTER -->
-                        <tr><td colspan="2" style="padding: 0; height: 10px;"><div style="${footerStyle}"></div></td></tr>
-                    </table>
-                `;
-            }
-
-            // --- PLANTILLA ESTÁNDAR (Ahorro Positivo) ---
-            
-            const desgloseRows = `
-                <!-- TÉRMINO POTENCIA -->
-                <tr><td colspan="2" style="font-family: Arial, sans-serif;"><div style="font-weight: bold; color: ${BLUE_MED}; padding: 5px 0 2px 0;">TÉRMINO POTENCIA (Precio en €/kW Día)</div></td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P1 (${num(bd.potencia_p1_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP1Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costP1, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P2 (${num(bd.potencia_p2_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP2Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costP2, 2)} €</td></tr>
-                
-                <!-- TÉRMINO ENERGÍA -->
-                <tr><td colspan="2" style="font-family: Arial, sans-serif;"><div style="font-weight: bold; color: ${BLUE_MED}; padding: 5px 0 2px 0;">TÉRMINO ENERGÍA (Precios en €/kWh)</div></td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E1 (${num(bd.consumo_punta,0)} kWh x ${numPriceFormula(offer.p1_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE1, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E2 (${num(bd.consumo_llano,0)} kWh x ${numPriceFormula(offer.p2_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE2, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E3 (${num(bd.consumo_valle,0)} kWh x ${numPriceFormula(offer.p3_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE3, 2)} €</td></tr>
-                
-                <!-- SUBTOTALES E IMPUESTOS -->
-                <tr><td style="${rowLabel} border-top: 2px solid #333333; font-weight: bold; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">SUBTOTAL (P+E)</td><td style="${rowValue} border-top: 2px solid #333333; font-weight: bold; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">${num(bd.subBase, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: Arial, sans-serif;">Impuesto Eléc. (${num(bd.IE_RATE * 100, 3)}%)</td><td style="${rowValue} font-family: Arial, sans-serif;">${num(bd.costIE, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-weight: bold; font-family: Arial, sans-serif;">BASE IMPONIBLE</td><td style="${rowValue} font-weight: bold; font-family: Arial, sans-serif;">${num(bd.baseImp, 2)} €</td></tr>
-                <tr><td style="${rowLabel} font-family: Arial, sans-serif;">IVA (21%)</td><td style="${rowValue} font-family: Arial, sans-serif;">${num(bd.costIVA, 2)} €</td></tr>
-                
-                <!-- TOTALES FINALES (TOTAL MES Y TOTAL AÑO) -->
-                <tr><td style="${rowLabel} background-color: #eeeeee; font-weight: bold; font-family: Arial, sans-serif;">TOTAL MES (PERIODO FACTURADO - ${bd.dias_facturados} DÍAS)</td><td style="${rowValue} background-color: #eeeeee; font-size: 16px; font-family: Arial, sans-serif;">${eur(bd.totalPeriod)}</td></tr>
-                 <!-- LÍNEA DE TOTAL AÑO -->
-                <tr><td style="${rowLabel} background-color: #eeeeee; font-weight: bold; font-family: Arial, sans-serif;">TOTAL AÑO (PROYECTADO)</td><td style="${rowValue} background-color: #eeeeee; font-size: 16px; font-family: Arial, sans-serif;">${eur(bd.totalAnnual)}</td></tr>
-            `;
-            
-            const preciosResumenTable = `
-                <tr><td colspan="2" style="font-family: Arial, sans-serif;"><div style="${sectionTitle}">RESUMEN DE PRECIOS DE LA OFERTA ÚNICA</div></td></tr>
-                <tr><td colspan="2" style="padding: 0; font-family: Arial, sans-serif;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 12px; border-collapse: collapse;">
-                        <tr style="background-color: #f5f5f5;">
-                            <th style="padding: 5px 8px; text-align: left; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">CONCEPTO</th>
-                            <th style="padding: 5px 8px; text-align: right; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">DRK ENERGÍA</th>
-                        </tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Potencia P1 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(bd.priceP1Day)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Potencia P2 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(bd.priceP2Day)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Energía E1 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(offer.p1_price)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Energía E2 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(offer.p2_price)}</td></tr>
-                        <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Energía E3 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(offer.p3_price)}</td></tr>
-                        <tr style="background-color: ${BG_LIGHT}; font-weight: bold;"><td style="padding: 8px; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">AHORRO ANUAL</td><td style="padding: 8px; text-align: right; font-size: 14px; color: ${BLUE_CTA}; font-family: Arial, sans-serif;">${eur(bd.savings)}</td></tr>
-                        <!-- ESPACIO SOLICITADO -->
-                        <tr style="background-color: white; height: 10px;"><td colspan="2"></td></tr>
-                    </table>
-                </td></tr>
-            `;
-            
-            const finalSavingsSummary = `
-                <tr><td colspan="2" style="padding: 0 20px 0 20px; text-align: center; font-family: Arial, sans-serif;">
-                    <div style="text-align: center; margin: 15px 0 5px 0;">
-                        <p style="margin: 0; font-size: 16px; color: ${BLUE_DARK}; font-weight: bold; font-family: Arial, sans-serif;">RESUMEN DE AHORRO FINAL</p>
-                    </div>
-                    <div style="background-color: ${BG_LIGHT}; padding: 15px; border-radius: 8px; border: 1px solid #dddddd; margin-bottom: 20px;">
-                        <p style="margin: 0; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">TU AHORRO ANUAL ESTIMADO ES:</p>
-                        <span style="font-size: 32px; font-weight: bold; color: ${BLUE_CTA}; display: block; margin-top: 5px; font-family: Arial, sans-serif;">${eur(bd.savings)}</span>
-                    </div>
-                </td></tr>
-            `;
-
-
-            return `
-                <table cellpadding="0" cellspacing="0" border="0" style="${tableMain}" role="presentation">
-                    <tr><td>
-                    <table width="600" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border-collapse: collapse;">
+                    <!-- FOOTER -->
+                    <tr><td colspan="2" style="padding: 0; height: 10px;"><div style="${footerStyle}"></div></td></tr>
+                </table>
+            ` : `
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="${tableMain} mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important;" role="presentation">
                     <!-- HEADER -->
                     <tr><td colspan="2" style="${headerCell}">
                         <h1 style="margin:0; font-size: 24px; font-family: Arial, sans-serif;">ESTUDIO DE AHORRO</h1>
@@ -958,18 +895,61 @@
                     </td></tr>
                     
                     <!-- 3. TABLA DE RESUMEN DE PRECIOS -->
-                    ${preciosResumenTable}
+                    <tr><td colspan="2" style="font-family: Arial, sans-serif;"><div style="${sectionTitle}">RESUMEN DE PRECIOS DE LA OFERTA ÚNICA</div></td></tr>
+                    <tr><td colspan="2" style="padding: 0; font-family: Arial, sans-serif;">
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 12px; border-collapse: collapse;" role="presentation">
+                            <tr style="background-color: #f5f5f5;">
+                                <th style="padding: 5px 8px; text-align: left; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">CONCEPTO</th>
+                                <th style="padding: 5px 8px; text-align: right; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">DRK ENERGÍA</th>
+                            </tr>
+                            <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Potencia P1 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(bd.priceP1Day)}</td></tr>
+                            <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Potencia P2 (€/kW/día)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(bd.priceP2Day)}</td></tr>
+                            <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Energía E1 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(offer.p1_price)}</td></tr>
+                            <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Energía E2 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(offer.p2_price)}</td></tr>
+                            <tr><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif;">Energía E3 (€/kWh)</td><td style="padding: 5px 8px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; font-family: monospace;">${numPriceFormula(offer.p3_price)}</td></tr>
+                            <tr style="background-color: ${BG_LIGHT}; font-weight: bold;"><td style="padding: 8px; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">AHORRO ANUAL</td><td style="padding: 8px; text-align: right; font-size: 14px; color: ${BLUE_CTA}; font-family: Arial, sans-serif;">${eur(bd.savings)}</td></tr>
+                            <!-- ESPACIO SOLICITADO -->
+                            <tr style="background-color: white; height: 10px;"><td colspan="2"></td></tr>
+                        </table>
+                    </td></tr>
                     
                     <!-- 4. DESGLOSE DETALLADO -->
                     <tr><td colspan="2" style="font-family: Arial, sans-serif;"><div style="${sectionTitle}">DESGLOSE DETALLADO DE LA SIMULACIÓN (${offer.name})</div></td></tr>
                     <tr><td colspan="2" style="padding: 0 20px;">
                         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 10px; margin-bottom: 20px; border-collapse: collapse;" role="presentation">
-                            ${desgloseRows}
+                            <tr><td colspan="2" style="font-family: Arial, sans-serif;"><div style="font-weight: bold; color: ${BLUE_MED}; padding: 5px 0 2px 0;">TÉRMINO POTENCIA (Precio en €/kW Día)</div></td></tr>
+                            <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P1 (${num(bd.potencia_p1_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP1Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costP1, 2)} €</td></tr>
+                            <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">P2 (${num(bd.potencia_p2_kw,2)} kW x ${bd.dias_facturados}d x ${numPriceFormula(bd.priceP2Day)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costP2, 2)} €</td></tr>
+                            
+                            <!-- TÉRMINO ENERGÍA -->
+                            <tr><td colspan="2" style="font-family: Arial, sans-serif;"><div style="font-weight: bold; color: ${BLUE_MED}; padding: 5px 0 2px 0;">TÉRMINO ENERGÍA (Precios en €/kWh)</div></td></tr>
+                            <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E1 (${num(bd.consumo_punta,0)} kWh x ${numPriceFormula(offer.p1_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE1, 2)} €</td></tr>
+                            <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E2 (${num(bd.consumo_llano,0)} kWh x ${numPriceFormula(offer.p2_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE2, 2)} €</td></tr>
+                            <tr><td style="${rowLabel} font-family: monospace; font-size: 12px;">E3 (${num(bd.consumo_valle,0)} kWh x ${numPriceFormula(offer.p3_price)})</td><td style="${rowValue} font-family: monospace; font-size: 12px;">${num(bd.costE3, 2)} €</td></tr>
+                            
+                            <!-- SUBTOTALES E IMPUESTOS -->
+                            <tr><td style="${rowLabel} border-top: 2px solid #333333; font-weight: bold; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">SUBTOTAL (P+E)</td><td style="${rowValue} border-top: 2px solid #333333; font-weight: bold; color: ${BLUE_DARK}; font-family: Arial, sans-serif;">${num(bd.subBase, 2)} €</td></tr>
+                            <tr><td style="${rowLabel} font-family: Arial, sans-serif;">Impuesto Eléc. (${num(bd.IE_RATE * 100, 3)}%)</td><td style="${rowValue} font-family: Arial, sans-serif;">${num(bd.costIE, 2)} €</td></tr>
+                            <tr><td style="${rowLabel} font-weight: bold; font-family: Arial, sans-serif;">BASE IMPONIBLE</td><td style="${rowValue} font-weight: bold; font-family: Arial, sans-serif;">${num(bd.baseImp, 2)} €</td></tr>
+                            <tr><td style="${rowLabel} font-family: Arial, sans-serif;">IVA (21%)</td><td style="${rowValue} font-family: Arial, sans-serif;">${num(bd.costIVA, 2)} €</td></tr>
+                            
+                            <!-- TOTALES FINALES (TOTAL MES Y TOTAL AÑO) -->
+                            <tr><td style="${rowLabel} background-color: #eeeeee; font-weight: bold; font-family: Arial, sans-serif;">TOTAL MES (PERIODO FACTURADO - ${bd.dias_facturados} DÍAS)</td><td style="${rowValue} background-color: #eeeeee; font-size: 16px; font-family: Arial, sans-serif;">${eur(bd.totalPeriod)}</td></tr>
+                             <!-- LÍNEA DE TOTAL AÑO -->
+                            <tr><td style="${rowLabel} background-color: #eeeeee; font-weight: bold; font-family: Arial, sans-serif;">TOTAL AÑO (PROYECTADO)</td><td style="${rowValue} background-color: #eeeeee; font-size: 16px; font-family: Arial, sans-serif;">${eur(bd.totalAnnual)}</td></tr>
                         </table>
                     </td></tr>
                     
                     <!-- 5. NUEVO RESUMEN DE AHORRO AL FINAL -->
-                    ${finalSavingsSummary}
+                    <tr><td colspan="2" style="padding: 0 20px 0 20px; text-align: center; font-family: Arial, sans-serif;">
+                        <div style="text-align: center; margin: 15px 0 5px 0;">
+                            <p style="margin: 0; font-size: 16px; color: ${BLUE_DARK}; font-weight: bold; font-family: Arial, sans-serif;">RESUMEN DE AHORRO FINAL</p>
+                        </div>
+                        <div style="background-color: ${BG_LIGHT}; padding: 15px; border-radius: 8px; border: 1px solid #dddddd; margin-bottom: 20px;">
+                            <p style="margin: 0; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">TU AHORRO ANUAL ESTIMADO ES:</p>
+                            <span style="font-size: 32px; font-weight: bold; color: ${BLUE_CTA}; display: block; margin-top: 5px; font-family: Arial, sans-serif;">${eur(bd.savings)}</span>
+                        </div>
+                    </td></tr>
 
                     <!-- CTA BOTÓN VML/HTML -->
                     <tr><td colspan="2" align="center" style="text-align: center; padding: 0 20px 20px 20px;">
@@ -979,9 +959,38 @@
 
                     <!-- PIE DE PÁGINA BONITO -->
                     <tr><td colspan="2" style="padding: 0; height: 10px;"><div style="${footerStyle}"></div></td></tr>
-                    </table>
-                    </td></tr>
                 </table>
+            `;
+
+            // Envolver la tabla principal en un documento HTML completo para una copia/pegada más robusta en clientes de correo
+            return `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Oferta DRK Energía</title>
+    <!-- [if gte mso 9]><xml>
+    <o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings>
+    </xml><![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8fafc;">
+    <center style="width: 100%; background-color: #f8fafc;">
+        <!-- [if mso | IE]>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="width:600px; margin: 0 auto; mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important;" role="presentation">
+        <tr>
+        <td style="line-height:0; font-size:0; mso-line-height-rule:exactly;">
+        <![endif]-->
+        ${mainTableContent}
+        <!-- [if mso | IE]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+    </center>
+</body>
+</html>
             `;
         }
 
