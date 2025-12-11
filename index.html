@@ -28,18 +28,23 @@
         }
     </script>
     <style>
+        /* Tipografía y fondo general */
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+
+        /* Estilos del escáner */
         #interactive.viewport { position: relative; width: 100%; height: auto; overflow: hidden; border-radius: 1rem; }
         #interactive.viewport > video { width: 100%; height: 100%; object-fit: cover; }
         .loading-ring { border: 4px solid rgba(255, 255, 255, 0.3); border-top: 4px solid #0ea5e9; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Animaciones */
         .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Estilos específicos para los selectores de modo */
+
+        /* Estilos específicos para los selectores de modo (base) */
         .mode-selector {
             border: 2px solid;
-            border-color: #e0f2fe; /* drk-100 */
+            transition: all 0.2s ease-in-out;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -67,19 +72,19 @@
                     <p class="text-sm font-bold text-drk-800 mb-2">MODO DE COMPARACIÓN</p>
                     <div id="comparison-mode-selectors" class="flex flex-wrap justify-center gap-2 text-sm">
                         <!-- Selector 1: DRK Únicamente -->
-                        <label class="mode-selector flex-1 px-2 py-2 rounded-lg cursor-pointer transition border-2 text-slate-600 bg-white hover:bg-drk-100" 
+                        <label class="mode-selector flex-1 px-2 py-2 rounded-lg cursor-pointer border-drk-300 bg-white text-slate-600 hover:bg-drk-100" 
                                 id="mode-drk-only-label">
                             <input type="radio" name="comparison_mode" value="drk_only" id="mode-drk-only" class="hidden">
                             <span class="font-semibold">DRK Únicamente</span>
                         </label>
                         <!-- Selector 2: DRK Prioritario (Default) -->
-                        <label class="mode-selector flex-1 px-2 py-2 rounded-lg cursor-pointer transition border-2 border-drk-500 text-white bg-drk-500 hover:bg-drk-600" 
+                        <label class="mode-selector flex-1 px-2 py-2 rounded-lg cursor-pointer border-drk-500 text-white bg-drk-500 hover:bg-drk-600" 
                                 id="mode-drk-prioritized-label">
                             <input type="radio" name="comparison_mode" value="drk_prioritized" id="mode-drk-prioritized" class="hidden" checked>
                             <span class="font-semibold">DRK Prioritario</span>
                         </label>
                         <!-- Selector 3: Mejor en el Mercado -->
-                        <label class="mode-selector flex-1 px-2 py-2 rounded-lg cursor-pointer transition border-2 text-slate-600 bg-white hover:bg-drk-100" 
+                        <label class="mode-selector flex-1 px-2 py-2 rounded-lg cursor-pointer border-drk-300 bg-white text-slate-600 hover:bg-drk-100" 
                                 id="mode-overall-best-label">
                             <input type="radio" name="comparison_mode" value="overall_best" id="mode-overall-best" class="hidden">
                             <span class="font-semibold">Mejor en el Mercado</span>
@@ -113,6 +118,7 @@
             </div>
             <div class="relative w-full aspect-[3/4] bg-black rounded-2xl overflow-hidden shadow-2xl mb-4">
                 <div id="interactive" class="viewport w-full h-full"></div>
+                <!-- Marco de escaneo visual -->
                 <div class="absolute inset-0 border-2 border-drk-500 opacity-50 m-8 rounded-lg pointer-events-none"></div>
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div class="w-64 h-1 bg-red-500 opacity-50"></div>
@@ -173,11 +179,11 @@
 
             <!-- Botones -->
             <div class="grid grid-cols-1 gap-3 mb-8">
-                   <button id="send-offer-btn" class="w-full bg-cta-red-500 hover:bg-cta-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 mb-3">
+                    <button id="send-offer-btn" class="w-full bg-cta-red-500 hover:bg-cta-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 mb-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V5"></path></svg>
                     <span>COPIAR COMPARATIVO</span>
                 </button>
-                   <button onclick="document.getElementById('details-container').classList.toggle('hidden')" class="text-center text-drk-800 font-bold text-sm hover:underline flex items-center justify-center gap-1">
+                    <button onclick="document.getElementById('details-container').classList.toggle('hidden')" class="text-center text-drk-800 font-bold text-sm hover:underline flex items-center justify-center gap-1">
                     Ver desglose detallado del cálculo
                 </button>
             </div>
@@ -204,7 +210,7 @@
                 <h3 class="text-xl font-bold text-drk-800 mb-4">Seleccione Opción</h3>
                 <button id="modal-upload-file-btn" class="w-full bg-drk-800 hover:bg-drk-900 text-white font-bold py-3 px-6 rounded-xl shadow-md mb-3">Subir Imagen</button>
                 <button id="modal-paste-image-btn" class="w-full bg-drk-600 hover:bg-drk-800 text-white font-bold py-3 px-6 rounded-xl shadow-md mb-4">Pegar Imagen (CTRL+V)</button>
-                <button onclick="document.getElementById('qr-options-modal').classList.add('hidden');" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold py-3 rounded-xl">Cancelar</button>
+                <button onclick="document.getElementById('qr-options-modal').classList.add('hidden'); document.getElementById('qr-options-modal').classList.remove('flex');" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold py-3 rounded-xl">Cancelar</button>
                 <textarea id="paste-catcher" class="opacity-0 w-0 h-0 absolute -z-10" aria-hidden="true"></textarea>
             </div>
         </div>
@@ -220,7 +226,7 @@
                 <!-- Botón de Copiar HTML (función original) -->
                 <button id="execute-send-offer-btn" class="w-full bg-cta-red-500 hover:bg-cta-red-600 text-white font-bold py-3 rounded-xl shadow-md mb-3">COPIAR COMPARATIVO (HTML)</button>
                 
-                <button onclick="document.getElementById('send-offer-modal').classList.add('hidden');" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold py-3 rounded-xl text-sm">Cancelar</button>
+                <button onclick="document.getElementById('send-offer-modal').classList.add('hidden'); document.getElementById('send-offer-modal').classList.remove('flex');" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold py-3 rounded-xl text-sm">Cancelar</button>
             </div>
         </div>
 
@@ -394,7 +400,7 @@
                 const url = urlsToTry[i];
                 try {
                     if (i > 0) {
-                          els.loadingStatus.textContent = "Reintentando carga de tarifas...";
+                             els.loadingStatus.textContent = "Reintentando carga de tarifas...";
                     }
                     const loaded = await fetchAndParse(url);
                     currentTariffs = loaded;
@@ -419,22 +425,32 @@
         }
 
         function dateDiffInDays(d1, d2) {
+            // Function to parse dates in DD/MM/YYYY or YYYY-MM-DD or YYYYMMDD format
             const parse = (str) => {
-                if (!str || str.length !== 10) return null;
-                if (str.includes('/')) { const p = str.split('/'); return new Date(p[2], p[1]-1, p[0]); }
-                if (str.includes('-')) { const p = str.split('-'); return new Date(p[0], p[1]-1, p[2]); }
-                if (str.length === 8) { const y = str.substring(0,4), m = str.substring(4,6), d = str.substring(6,8); return new Date(y, m-1, d); }
+                if (!str || str.length < 8) return null;
+                if (str.includes('/')) { const p = str.split('/'); return new Date(p[2], p[1]-1, p[0]); } // DD/MM/YYYY
+                if (str.includes('-')) { const p = str.split('-'); return new Date(p[0], p[1]-1, p[2]); } // YYYY-MM-DD
+                if (str.length === 8) { const y = str.substring(0,4), m = str.substring(4,6), d = str.substring(6,8); return new Date(y, m-1, d); } // YYYYMMDD (Less likely but safer)
                 return null;
             }
             const dt1 = parse(d1), dt2 = parse(d2);
             if(!dt1 || !dt2) return 0;
+            // Calculate difference and add 1 day for inclusive period
             return Math.ceil(Math.abs(dt2 - dt1) / (1000 * 60 * 60 * 24)) + 1;
         }
 
         function handleQRRead(raw) {
+            // Stop scanner loop immediately
+            stopScanner();
+
+            // Clean raw URL (remove CNMC base URL) and parse parameters
             if (raw.includes('?')) raw = raw.split('?')[1] || raw;
             const p = {};
-            raw.split('&').forEach(part => { const [k, v] = part.split('='); if(k) p[k] = decodeURIComponent(v||'').replace(',', '.'); });
+            raw.split('&').forEach(part => { 
+                const [k, v] = part.split('='); 
+                // Replace comma with dot for correct float parsing later (standard for QR data)
+                if(k) p[k] = decodeURIComponent(v||'').replace(',', '.'); 
+            });
             
             const data = {
                 cups: p.cups || 'No detectado',
@@ -449,20 +465,29 @@
                 fechas: `${p.iniF || '?'} - ${p.finF || '?'}`
             };
 
-            if (data.dias_facturados === 0 || data.importe_total === 0) {
-                window.showErrorModal("QR incompleto o inválido.");
+            if (data.dias_facturados === 0 || data.importe_total <= 0) {
+                window.showErrorModal("QR incompleto o inválido. No se pudieron extraer datos de consumo o importes.");
                 window.resetApp();
                 return;
             }
-            compareOffers(data);
+            
+            // Only compare offers if tariffs are loaded
+            if (currentTariffs.length > 0) {
+                compareOffers(data);
+            } else {
+                 window.showErrorModal("Las tarifas no se han cargado correctamente. Intente de nuevo más tarde.");
+                 window.resetApp();
+            }
         }
         
         // --- NEW HELPER FUNCTION TO CALCULATE COST FOR A SINGLE TARIFF ---
         function calculateTariffCost(tariff, data) {
-            const IVA_RATE = 0.21;
-            const IE_RATE = 0.05113; 
+            const IVA_RATE = 0.21; // 21% IVA
+            const IE_RATE = 0.05113; // Impuesto de Electricidad (actual)
             const ANNUAL_DAYS_CONST = 365;
 
+            // 1. Costes de Potencia (Periodo)
+            // Nota: Los precios de potencia de la hoja están en €/kW/año. Se dividen por 365 para obtener €/kW/día.
             const priceP1Day = tariff.p_potencia_1 / ANNUAL_DAYS_CONST;
             const priceP2Day = tariff.p_potencia_2 / ANNUAL_DAYS_CONST;
             
@@ -470,17 +495,21 @@
             const costP2 = data.potencia_p2_kw * data.dias_facturados * priceP2Day;
             const subPower = costP1 + costP2;
 
+            // 2. Costes de Energía (Consumo)
             const costE1 = data.consumo_punta * tariff.p1_price;
             const costE2 = data.consumo_llano * tariff.p2_price;
             const costE3 = data.consumo_valle * tariff.p3_price;
             const subEnergy = costE1 + costE2 + costE3;
 
+            // 3. Impuestos y total
             const subBase = subPower + subEnergy;
-            const costIE = subBase * IE_RATE;
-            const baseImp = subBase + costIE;
-            const costIVA = baseImp * IVA_RATE;
+            const costIE = subBase * IE_RATE; // Impuesto Eléctrico (sobre la base de P+E)
+            const baseImp = subBase + costIE; // Base imponible = Base + IE
+            const costIVA = baseImp * IVA_RATE; // IVA (sobre la base imponible)
             
-            const totalPeriod = baseImp + costIVA; 
+            const totalPeriod = baseImp + costIVA; // Coste total estimado para el periodo
+            
+            // 4. Proyección Anual
             const factorAnual = ANNUAL_DAYS_CONST / data.dias_facturados;
             const totalAnnual = totalPeriod * factorAnual; 
             const originalBillAnnual = data.importe_total * factorAnual;
@@ -507,20 +536,20 @@
 
             // Find the best overall and best DRK option
             allComparisons.forEach(c => {
-                // Track Overall Best
-                if (!bestOverallComparison || c.savings > bestOverallComparison.savings) {
+                // Track Overall Best (Lowest Annual Cost)
+                if (!bestOverallComparison || c.totalAnnual < bestOverallComparison.totalAnnual) {
                     bestOverallComparison = c;
                 }
-                // Track Best DRK
+                // Track Best DRK (Lowest Annual Cost within DRK tariffs)
                 if (c.offer.isDrk) {
-                    if (!bestDrkComparison || c.savings > bestDrkComparison.savings) {
+                    if (!bestDrkComparison || c.totalAnnual < bestDrkComparison.totalAnnual) {
                         bestDrkComparison = c;
                     }
                 }
             });
 
             if (!bestOverallComparison) {
-                 return window.showErrorModal("No se encontraron tarifas válidas para la comparación.");
+                return window.showErrorModal("No se encontraron tarifas válidas para la comparación.");
             }
 
             let finalComparisonResult = null;
@@ -530,27 +559,40 @@
                 // Mode 1: DRK Only - Choose the best DRK option
                 finalComparisonResult = bestDrkComparison;
             } else if (comparisonMode === 'drk_prioritized') {
-                // Mode 2: DRK Prioritized - If best DRK saves money, choose it. If not, fall back to overall best.
+                // Mode 2: DRK Prioritized - If best DRK is better than current, choose it. If not, fall back to overall best.
+                // We use the best DRK found regardless of savings being positive, but we check if *any* offer beats the original.
+                // Let's stick to the original logic: If DRK saves money, use it. Else, use the absolute lowest cost (which might be the original bill).
                 if (bestDrkComparison && bestDrkComparison.savings > 0) {
                      finalComparisonResult = bestDrkComparison;
                 } else {
-                    // If DRK doesn't save money, use the absolute best comparison result
-                     finalComparisonResult = bestOverallComparison;
+                    // Check if the overall best is actually the current bill (savings <= 0)
+                    if (bestOverallComparison.savings <= 0) {
+                        // If current bill is the best option found (savings is 0 or negative for all), simulate a "No-Switch" comparison result.
+                        // We use the bestOverallComparison object but mark it for UI rendering as "Current is Best".
+                        finalComparisonResult = bestOverallComparison; 
+                    } else {
+                        // If the overall best is positive, use it.
+                        finalComparisonResult = bestOverallComparison;
+                    }
                 }
             } else if (comparisonMode === 'overall_best') {
-                // Mode 3: Overall Best - Choose the absolute best option found
+                // Mode 3: Overall Best - Choose the absolute best option found (lowest totalAnnual)
                 finalComparisonResult = bestOverallComparison;
             }
             
-            // Fallback: If the selected mode resulted in null (e.g., 'drk_only' but no DRK tariffs found), use the absolute best one found.
+            // Fallback for cases where a specific mode (e.g., drk_only but no drk tariffs) resulted in null
             if (!finalComparisonResult) {
                 finalComparisonResult = bestOverallComparison;
             }
 
             // --- Final Selection and Negative Savings Handling (Universal) ---
+            // If the BEST selected result (by the mode) does NOT save money compared to the original bill, 
+            // the UI should show the original bill data as the "new" best price, along with 0.00€ saving, and the "Current is Best" text.
             if (finalComparisonResult.savings <= 0) {
                 // Negative/Zero Savings Scenario: uses the best available data, but flags it for UI rendering.
-                lastComparisonResult = { ...finalComparisonResult, isNegativeSavings: true };
+                // NOTE: If savings are negative, we calculate the savings relative to the best possible market option (which is the current bill).
+                const zeroSavingsResult = { ...finalComparisonResult, isNegativeSavings: true, savings: 0.00, totalAnnual: finalComparisonResult.originalBillAnnual };
+                lastComparisonResult = zeroSavingsResult;
             } else {
                 lastComparisonResult = { ...finalComparisonResult, isNegativeSavings: false };
             }
@@ -579,7 +621,7 @@
             if (bd.isNegativeSavings) {
                 // A. Scenario: No mejor opción/Ahorro 0.00
                 els.bestOfferName.textContent = "¡Estás en la Mejor Opción!";
-                els.bestOfferDesc.textContent = "Tu tarifa actual es la más competitiva del mercado. Seguiremos estudiando.";
+                els.bestOfferDesc.textContent = "Tu tarifa actual es la más competitiva del mercado.";
                 
                 // Savings Display
                 els.savingsEstimate.textContent = "0,00 €";
@@ -594,6 +636,10 @@
                 // New Cost Display should reflect original cost (as there's no better offer)
                 els.newMonthlyCostDisplay.textContent = eur(bd.originalBillAnnual / 12) + "/mes";
                 els.newAnnualCostDisplay.textContent = eur(bd.originalBillAnnual) + "/año";
+                
+                // Use a generic placeholder offer name for the breakdown if the best one was not DRK
+                // This is a design choice: when no savings, we show the current best price is the current bill.
+                offer = { name: "Tu Tarifa Actual", p1_price: 0, p2_price: 0, p3_price: 0, description: "La tarifa que actualmente disfrutas." };
                 
             } else {
                 // B. Scenario: Ahorro positivo
@@ -622,14 +668,16 @@
                     <div><p class="text-xs text-slate-500">Periodo</p><p class="font-bold text-slate-700">${bd.dias_facturados} días</p></div>
                     <div><p class="text-xs text-slate-500">Fechas</p><p class="font-bold text-slate-700">${bd.fechas}</p></div>
                     <div class="col-span-2 border-t pt-2 mt-2">
-                        <div class="flex justify-between text-xs mb-1"><span>E1</span><span class="font-mono">${num(bd.consumo_punta,0)} kWh</span></div>
-                        <div class="flex justify-between text-xs mb-1"><span>E2</span><span class="font-mono">${num(bd.consumo_llano,0)} kWh</span></div>
-                        <div class="flex justify-between text-xs mb-1"><span>E3</span><span class="font-mono">${num(bd.consumo_valle,0)} kWh</span></div>
-                        <div class="flex justify-between font-bold text-drk-800 mt-1"><span>Total</span><span>${num(bd.consumo_total,0)} kWh</span></div>
+                        <div class="flex justify-between text-xs mb-1"><span>E1 (Punta)</span><span class="font-mono">${num(bd.consumo_punta,0)} kWh</span></div>
+                        <div class="flex justify-between text-xs mb-1"><span>E2 (Llano)</span><span class="font-mono">${num(bd.consumo_llano,0)} kWh</span></div>
+                        <div class="flex justify-between text-xs mb-1"><span>E3 (Valle)</span><span class="font-mono">${num(bd.consumo_valle,0)} kWh</span></div>
+                        <div class="flex justify-between font-bold text-drk-800 mt-1"><span>Consumo Total</span><span>${num(bd.consumo_total,0)} kWh</span></div>
                     </div>
                 </div>
             `;
 
+            // Note: The cost breakdown only makes sense to show for the *winning* offer, not the user's current bill, 
+            // since we don't know the current bill's actual price components.
             els.costBreakdown.innerHTML = `
                 <div class="bg-white p-6 font-mono text-xs md:text-sm text-slate-600 leading-relaxed">
                     <div class="text-center border-b-2 border-dashed border-slate-300 pb-4 mb-4">
@@ -650,10 +698,11 @@
                     <div class="border-t border-slate-200 pt-2 mb-2">
                         <div class="flex justify-between font-bold text-slate-800"><span>SUBTOTAL</span><span>${num(bd.subBase,2)} €</span></div>
                         <div class="flex justify-between"><span>Imp. Eléc.</span><span>${num(bd.costIE,2)} €</span></div>
-                        <div class="flex justify-between font-bold"><span>BASE</span><span>${num(bd.baseImp,2)} €</span></div>
-                        <div class="flex justify-between"><span>IVA</span><span>${num(bd.costIVA,2)} €</span></div>
+                        <div class="flex justify-between font-bold"><span>BASE IMPONIBLE</span><span>${num(bd.baseImp,2)} €</span></div>
+                        <div class="flex justify-between"><span>IVA (21%)</span><span>${num(bd.costIVA,2)} €</span></div>
                     </div>
-                    <div class="bg-drk-900 text-white p-3 rounded-lg flex justify-between items-center text-md font-bold mb-1"><span>TOTAL MES</span><span>${eur(bd.totalAnnual / 12)}</span></div>
+                    <div class="bg-drk-900 text-white p-3 rounded-lg flex justify-between items-center text-md font-bold mb-1"><span>TOTAL PERIODO (${bd.dias_facturados} DÍAS)</span><span>${eur(bd.totalPeriod)}</span></div>
+                    <div class="bg-drk-800 text-drk-50 p-3 rounded-lg flex justify-between items-center text-md font-bold"><span>TOTAL AÑO (PROYECTADO)</span><span>${eur(bd.totalAnnual)}</span></div>
                 </div>
             `;
         }
@@ -690,6 +739,7 @@
                 if (success) {
                     window.showMessageModal("✅ ¡Oferta copiada con éxito! Ahora puede pegar (Ctrl+V o Cmd+V) el diseño visual en su correo de escritorio.");
                     els.sendOfferModal.classList.add('hidden');
+                    els.sendOfferModal.classList.remove('flex');
                 } else {
                     // Fallback para dispositivos que no soportan copia HTML enriquecida
                     window.showErrorModal("No se pudo copiar el diseño visual. Intente desde un PC o utilice la opción de compartir si existe en su dispositivo.");
@@ -736,9 +786,11 @@
             
             // --- CUERPO DEL EMAIL (Texto plano: para el mailto:) ---
             const LB = '\r\n';
-            const monthlyEstimate = eur(bd.totalAnnual / 12);
+            const monthlyEstimate = bd.isNegativeSavings ? eur(bd.originalBillAnnual / 12) : eur(bd.totalAnnual / 12);
             const totalConsumption = num(bd.consumo_total, 0) + ' kWh';
+            const annualSavings = bd.isNegativeSavings ? '0,00 €' : eur(bd.savings);
             
+            // Note: The prices below are the calculated winning offer prices, even if we are in the "no savings" scenario
             const p1PricePerDay = numPriceFormula(bd.priceP1Day);
             const p2PricePerDay = numPriceFormula(bd.priceP2Day);
             const e1Price = numPriceFormula(offer.p1_price);
@@ -746,41 +798,41 @@
             const e3Price = numPriceFormula(offer.p3_price);
 
             const emailBody = `Hola DRK, confirmo la aceptación de la oferta con CUPS: ${bd.cups}.${LB}${LB}` +
-                                 `--- DATOS DE LA OFERTA ---${LB}${LB}` +
-                                 `Comercializadora y Tarifa: DRK ENERGÍA - ${offer.name}${LB}` +
-                                 `Zona Geográfica: PENINSULA${LB}` +
-                                 `Ahorro Anual Estimado: ${eur(bd.savings)}${LB}` +
-                                 `Total Mensual Estimado: ${monthlyEstimate}${LB}` +
-                                 `Consumo Total Facturado: ${totalConsumption}${LB}${LB}` +
-                                 `--- DETALLE DE PRECIOS (€) ---${LB}` +
-                                 `P1 (Potencia - €/kW/día): ${p1PricePerDay}${LB}` +
-                                 `P2 (Potencia - €/kW/día): ${p2PricePerDay}${LB}` +
-                                 `E1 (Energía - €/kWh): ${e1Price}${LB}` +
-                                 `E2 (Energía - €/kWh): ${e2Price}${LB}` +
-                                 `E3 (Energía - €/kWh): ${e3Price}${LB}` +
-                                 `------------------------------${LB}${LB}` +
-                                 `Por favor, utilicen los siguientes datos para tramitar mi cambio:${LB}` +
-                                 `--------------------------------------------------------${LB}` +
-                                 `DATOS DEL CLIENTE (A RELLENAR):${LB}` +
-                                 `--------------------------------------------------------${LB}` +
-                                 `Nombre completo: ${clientName}${LB}` +
-                                 `Teléfono de contacto: ${clientPhone}${LB}` +
-                                 `Email de contacto: ${clientEmail}${LB}${LB}` +
-                                 `--------------------------------------------------------${LB}` +
-                                 `INFORMACIÓN ADICIONAL (Opcional):${LB}` +
-                                 `--------------------------------------------------------${LB}` +
-                                 `[AGREGUE CUALQUIER COMENTARIO EXTRA AQUÍ]${LB}${LB}` +
-                                 `--- DOCUMENTACIÓN REQUERIDA ---${LB}` +
-                                 `Para formalizar el contrato, por favor, responde a este email adjuntando:${LB}` +
-                                 `1. Foto del DNI/CIF (anverso y reverso).${LB}` +
-                                 `2. Última factura (mínimo 3 meses de antigüedad).${LB}` +
-                                 `3. Email de contacto para validación.${LB}` +
-                                 `4. Teléfono de contacto.${LB}` +
-                                 `5. Número de cuenta bancaria (IBAN).${LB}${LB}` +
-                                 `Adjunto la documentación requerida.`;
+                                `--- DATOS DE LA OFERTA ---${LB}${LB}` +
+                                `Comercializadora y Tarifa: DRK ENERGÍA - ${offer.name}${LB}` +
+                                `Zona Geográfica: PENINSULA${LB}` +
+                                `Ahorro Anual Estimado: ${annualSavings}${LB}` +
+                                `Total Mensual Estimado: ${monthlyEstimate}${LB}` +
+                                `Consumo Total Facturado: ${totalConsumption}${LB}${LB}` +
+                                `--- DETALLE DE PRECIOS (€) ---${LB}` +
+                                `P1 (Potencia - €/kW/día): ${p1PricePerDay}${LB}` +
+                                `P2 (Potencia - €/kW/día): ${p2PricePerDay}${LB}` +
+                                `E1 (Energía - €/kWh): ${e1Price}${LB}` +
+                                `E2 (Energía - €/kWh): ${e2Price}${LB}` +
+                                `E3 (Energía - €/kWh): ${e3Price}${LB}` +
+                                `------------------------------${LB}${LB}` +
+                                `Por favor, utilicen los siguientes datos para tramitar mi cambio:${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `DATOS DEL CLIENTE (A RELLENAR):${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `Nombre completo: ${clientName}${LB}` +
+                                `Teléfono de contacto: ${clientPhone}${LB}` +
+                                `Email de contacto: ${clientEmail}${LB}${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `INFORMACIÓN ADICIONAL (Opcional):${LB}` +
+                                `--------------------------------------------------------${LB}` +
+                                `[AGREGUE CUALQUIER COMENTARIO EXTRA AQUÍ]${LB}${LB}` +
+                                `--- DOCUMENTACIÓN REQUERIDA ---${LB}` +
+                                `Para formalizar el contrato, por favor, responde a este email adjuntando:${LB}` +
+                                `1. Foto del DNI/CIF (anverso y reverso).${LB}` +
+                                `2. Última factura (mínimo 3 meses de antigüedad).${LB}` +
+                                `3. Email de contacto para validación.${LB}` +
+                                `4. Teléfono de contacto.${LB}` +
+                                `5. Número de cuenta bancaria (IBAN).${LB}${LB}` +
+                                `Adjunto la documentación requerida.`;
 
 
-            const subject = `ACEPTACIÓN OFERTA`; 
+            const subject = `ACEPTACIÓN OFERTA - ${bd.cups}`; 
             const formalizationLink = `mailto:f.araujo@drk.es,r.guerra@drk.es,s.caballero@drk.es?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
             
             // --- VML Button Generation (Hybrid approach for Outlook reliability) ---
@@ -804,13 +856,13 @@
                 <!--<![endif]-->
             `;
 
-            const CTA_SECTION = VML_BUTTON(formalizationLink, 'QUIERO LA OFERTA');
+            const CTA_SECTION = bd.isNegativeSavings ? VML_BUTTON(formalizationLink, 'CONTACTAR COMERCIAL') : VML_BUTTON(formalizationLink, 'QUIERO LA OFERTA');
 
             // --- CUERPO DE LA TABLA PRINCIPAL (PARA EL HTML COMPLETO) ---
             const mainTableContent = bd.isNegativeSavings ? `
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="${tableMain} mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important;" role="presentation">
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="${tableMain} mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important; border-radius: 8px;" role="presentation">
                     <!-- HEADER (DRK Theme) -->
-                    <tr><td colspan="2" style="${headerCell}">
+                    <tr><td colspan="2" style="${headerCell} border-radius: 8px 8px 0 0;">
                         <h1 style="margin:0; font-size: 24px;">ESTUDIO DE AHORRO</h1>
                         <p style="margin:5px 0 0 0; font-size: 14px; opacity: 0.9;">COMPARATIVA PROFESIONAL - DRK ENERGÍA</p>
                     </td></tr>
@@ -829,7 +881,7 @@
                         </div>
                         <p style="margin: 0; color: ${BLUE_DARK}; font-size: 22px; font-weight: bold; font-family: Arial, sans-serif;">¡Excelente Noticia!</p>
                         <h2 style="margin: 5px 0 10px 0; color: ${BLUE_DARK}; font-size: 18px; font-weight: normal; font-family: Arial, sans-serif;">TU TARIFA ACTUAL ES LA MÁS COMPETITIVA DEL MERCADO</h2>
-                        <p style="margin: 0; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">En este momento, no existe una oferta que mejore tu coste actual, lo que confirma que tienes una tarifa muy competitiva. Seguiremos estudiando.</p>
+                        <p style="margin: 0; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">En este momento, no existe una oferta que mejore tu coste actual. Seguiremos estudiando el mercado por ti.</p>
                     </td></tr>
 
                     <!-- ESTADO ACTUAL (Destacado) -->
@@ -837,16 +889,21 @@
                         <p style="font-size: 14px; font-weight: bold; color: ${BLUE_DARK}; margin-bottom: 5px; font-family: Arial, sans-serif;">COSTE ANUAL ESTIMADO (ACTUAL):</p>
                         <span style="font-size: 32px; font-weight: bold; color: ${GREEN_SAVE}; display: block; font-family: Arial, sans-serif;">${eur(bd.originalBillAnnual)}</span>
                         <p style="font-size: 12px; color: #888888; font-family: Arial, sans-serif;">/ AÑO</p>
-                        <p style="margin-top: 15px; font-size: 14px; color: ${GRAY_TEXT}; font-family: Arial, sans-serif;">[Colaborador: ${commercialCode}] | Este resumen es una simulación basada en su última factura.</p>
+                    </td></tr>
+
+                    <!-- CTA BOTÓN VML/HTML (Contactar Comercial) -->
+                    <tr><td colspan="2" align="center" style="text-align: center; padding: 0 20px 20px 20px;">
+                        ${CTA_SECTION}
+                        <p style="font-size: 10px; color: #999; margin-top: 10px; font-family: Arial, sans-serif;">[Colaborador: ${commercialCode}] | Este resumen es una simulación basada en su última factura.</p>
                     </td></tr>
 
                     <!-- FOOTER -->
-                    <tr><td colspan="2" style="padding: 0; height: 10px;"><div style="${footerStyle}"></div></td></tr>
+                    <tr><td colspan="2" style="padding: 0; height: 10px;"><div style="${footerStyle} border-radius: 0 0 8px 8px;"></div></td></tr>
                 </table>
             ` : `
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="${tableMain} mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important;" role="presentation">
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="${tableMain} mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important; border-radius: 8px;" role="presentation">
                     <!-- HEADER -->
-                    <tr><td colspan="2" style="${headerCell}">
+                    <tr><td colspan="2" style="${headerCell} border-radius: 8px 8px 0 0;">
                         <h1 style="margin:0; font-size: 24px; font-family: Arial, sans-serif;">ESTUDIO DE AHORRO</h1>
                         <p style="margin:5px 0 0 0; font-size: 14px; opacity: 0.9; font-family: Arial, sans-serif;">COMPARATIVA PROFESIONAL - DRK ENERGÍA</p>
                     </td></tr>
@@ -934,7 +991,7 @@
                             <tr><td style="${rowLabel} font-family: Arial, sans-serif;">IVA (21%)</td><td style="${rowValue} font-family: Arial, sans-serif;">${num(bd.costIVA, 2)} €</td></tr>
                             
                             <!-- TOTALES FINALES (TOTAL MES Y TOTAL AÑO) -->
-                            <tr><td style="${rowLabel} background-color: #eeeeee; font-weight: bold; font-family: Arial, sans-serif;">TOTAL MES (PERIODO FACTURADO - ${bd.dias_facturados} DÍAS)</td><td style="${rowValue} background-color: #eeeeee; font-size: 16px; font-family: Arial, sans-serif;">${eur(bd.totalPeriod)}</td></tr>
+                            <tr><td style="${rowLabel} background-color: #eeeeee; font-weight: bold; font-family: Arial, sans-serif;">TOTAL PERIODO FACTURADO (${bd.dias_facturados} DÍAS)</td><td style="${rowValue} background-color: #eeeeee; font-size: 16px; font-family: Arial, sans-serif;">${eur(bd.totalPeriod)}</td></tr>
                              <!-- LÍNEA DE TOTAL AÑO -->
                             <tr><td style="${rowLabel} background-color: #eeeeee; font-weight: bold; font-family: Arial, sans-serif;">TOTAL AÑO (PROYECTADO)</td><td style="${rowValue} background-color: #eeeeee; font-size: 16px; font-family: Arial, sans-serif;">${eur(bd.totalAnnual)}</td></tr>
                         </table>
@@ -958,7 +1015,7 @@
                     </td></tr>
 
                     <!-- PIE DE PÁGINA BONITO -->
-                    <tr><td colspan="2" style="padding: 0; height: 10px;"><div style="${footerStyle}"></div></td></tr>
+                    <tr><td colspan="2" style="padding: 0; height: 10px;"><div style="${footerStyle} border-radius: 0 0 8px 8px;"></div></td></tr>
                 </table>
             `;
 
@@ -1004,6 +1061,8 @@
             target.classList.remove('hidden');
             if(viewId === 'results-view') target.classList.add('animate-fade-in-up');
         }
+        
+        // --- Modals (Global Functions) ---
         window.showErrorModal = (msg) => {
             document.getElementById('error-title').textContent = "¡Atención!";
             document.getElementById('error-icon').className = "w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4";
@@ -1032,74 +1091,141 @@
             els.startScanBtn.disabled = false;
             els.uploadMenuBtn.disabled = false; 
         };
+        
+        // --- Scanner Logic ---
         function startScanner() {
             if (currentTariffs.length === 0) return window.showErrorModal("Cargando tarifas, espere...");
             if (scannerRunning) return;
             showView('scanner-view');
             scannerRunning = true;
+            
+            // Create video/canvas elements inside the interactive viewport
             video = document.createElement('video');
             video.autoplay = true;
             video.playsInline = true;
+            video.style.maxWidth = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'cover';
+
             canvas = document.createElement('canvas');
             canvasCtx = canvas.getContext('2d');
+            
             els.interactiveViewport.innerHTML = '';
             els.interactiveViewport.appendChild(video);
+            
+            // Request camera access
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(s => {
-                stream = s; video.srcObject = stream;
-                video.onloadedmetadata = () => { video.play(); scanLoop(); };
+                stream = s; 
+                video.srcObject = stream;
+                video.onloadedmetadata = () => { 
+                    video.play(); 
+                    scanLoop(); 
+                };
             }).catch(err => {
-                console.error(err); stopScanner();
-                window.showErrorModal("Error al acceder a la cámara.");
+                console.error("Camera access error:", err); 
+                stopScanner();
+                window.showErrorModal("Error al acceder a la cámara. Asegúrese de tener permisos o use la opción de subir imagen.");
                 window.resetApp();
             });
         }
+        
         function scanLoop() {
-            if (!scannerRunning || !video || video.readyState !== video.HAVE_ENOUGH_DATA) { animationFrameId = requestAnimationFrame(scanLoop); return; }
-            if (canvas.width !== video.videoWidth) { canvas.width = video.videoWidth; canvas.height = video.videoHeight; }
+            if (!scannerRunning || !video || video.readyState !== video.HAVE_ENOUGH_DATA) { 
+                animationFrameId = requestAnimationFrame(scanLoop); 
+                return; 
+            }
+            if (canvas.width !== video.videoWidth) { 
+                canvas.width = video.videoWidth; 
+                canvas.height = video.videoHeight; 
+            }
+            
+            // Draw image to canvas
             canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Get image data and scan for QR code
             const imageData = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
             const code = jsQR(imageData.data, imageData.width, imageData.height);
-            if (code) { stopScanner(); handleQRRead(code.data); } else { animationFrameId = requestAnimationFrame(scanLoop); }
+            
+            if (code) { 
+                handleQRRead(code.data); 
+            } else { 
+                animationFrameId = requestAnimationFrame(scanLoop); 
+            }
         }
+        
         function stopScanner() {
             scannerRunning = false;
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             if (stream) stream.getTracks().forEach(t => t.stop());
             video = null;
+            // Optionally clear the viewport content
+            if (els.interactiveViewport) els.interactiveViewport.innerHTML = ''; 
         }
+        
         function capturePhoto() {
-            if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) return;
+            if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) return window.showErrorModal("La cámara no está lista.");
+            
+            // Re-use canvas from scanning loop or create a temporary one if needed
+            if (!canvas || !canvasCtx) {
+                canvas = document.createElement('canvas');
+                canvasCtx = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+            }
+            
             canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
             const code = jsQR(imageData.data, imageData.width, imageData.height);
-            if (code) { stopScanner(); handleQRRead(code.data); } 
-            else { window.showErrorModal("No se detectó ningún QR."); }
+            
+            if (code) { 
+                stopScanner(); 
+                handleQRRead(code.data); 
+            } 
+            else { 
+                window.showErrorModal("No se detectó ningún QR en la foto capturada."); 
+            }
         }
+        
         function setupPasteCatcher() {
+            // Global paste listener checks if the modal is open AND the paste catcher is focused
             document.addEventListener('paste', (e) => {
-                if (document.getElementById('qr-options-modal').classList.contains('hidden') || !document.getElementById('paste-catcher').matches(':focus')) return;
+                const modalVisible = !document.getElementById('qr-options-modal').classList.contains('hidden');
+                // Check if the paste catcher element is the active/focused element
+                const pasteCatcherFocused = document.getElementById('paste-catcher') === document.activeElement; 
+                
+                if (!modalVisible || !pasteCatcherFocused) return;
+
                 const items = e.clipboardData.items;
                 for (let i = 0; i < items.length; i++) {
                     if (items[i].type.indexOf('image') !== -1) {
                         const blob = items[i].getAsFile();
                         if (blob) {
                             document.getElementById('qr-options-modal').classList.add('hidden');
-                            e.preventDefault();
+                            document.getElementById('qr-options-modal').classList.remove('flex');
+                            e.preventDefault(); // Prevent default text paste
                             processImageForQR(blob);
                             break;
                         }
                     }
                 }
             });
+            
+            // Focus the invisible textarea when the button is clicked to enable paste listening
             document.getElementById('modal-paste-image-btn').addEventListener('click', () => {
-                document.getElementById('paste-catcher').focus();
-                window.showMessageModal("Presione CTRL+V para pegar la imagen.");
+                const pasteCatcher = document.getElementById('paste-catcher');
+                pasteCatcher.focus();
+                // Select the text area content to facilitate replacement
+                pasteCatcher.select(); 
+                window.showMessageModal("Presione CTRL+V (o Cmd+V) para pegar la imagen de la factura.");
+                // Hide the success message after a few seconds
                 setTimeout(window.hideErrorModal, 3000); 
             });
         }
+        
         function processImageForQR(file) {
             els.loadingStatus.textContent = "Procesando imagen...";
             els.loadingStatus.classList.remove('hidden');
+            
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
@@ -1107,7 +1233,8 @@
                     const tempCanvas = document.createElement('canvas');
                     const tempCtx = tempCanvas.getContext('2d');
                     let { width, height } = img;
-                    // Resize for performance
+                    
+                    // Resize for performance on large images
                     const max_dim = 1500;
                     if (width > max_dim || height > max_dim) {
                         const ratio = Math.min(max_dim / width, max_dim / height);
@@ -1115,12 +1242,16 @@
                     }
                     tempCanvas.width = width; tempCanvas.height = height;
                     tempCtx.drawImage(img, 0, 0, width, height);
+                    
                     try {
                         const imageData = tempCtx.getImageData(0, 0, width, height);
                         const code = jsQR(imageData.data, imageData.width, imageData.height);
+                        
                         els.loadingStatus.classList.add('hidden');
+                        
                         if (code) handleQRRead(code.data);
                         else window.showErrorModal("No se encontró QR en la imagen.");
+                        
                     } catch (error) {
                         console.error(error); els.loadingStatus.classList.add('hidden');
                         window.showErrorModal("Error procesando la imagen.");
@@ -1148,7 +1279,7 @@
             });
         }
 
-        // --- FUNCIÓN DE INICIALIZACIÓN (HACER GLOBAL) ---
+        // --- FUNCIÓN DE INICIALIZACIÓN ---
         function initApp() {
             // 1. Intentar cargar la última versión de Google Sheets
             fetchTariffsFromSheet();
@@ -1158,7 +1289,7 @@
             els.stopScanBtn.addEventListener('click', stopScanner);
             els.capturePhotoBtn.addEventListener('click', capturePhoto);
             
-            // Listener para mostrar el modal de OFERTA
+            // Listener para mostrar el modal de OFERTA (modal de datos del comercial/cliente)
             els.sendOfferBtn.addEventListener('click', () => {
                 if (lastComparisonResult) {
                     els.sendOfferModal.classList.remove('hidden');
@@ -1177,14 +1308,17 @@
                 els.qrOptionsModal.classList.remove('hidden');
                 els.qrOptionsModal.classList.add('flex');
             });
+            
+            // Clic en "Subir Imagen" abre el input de archivo
             document.getElementById('modal-upload-file-btn').addEventListener('click', () => document.getElementById('image-file-input').click()); 
+            
+            // Procesar el archivo subido
             document.getElementById('image-file-input').addEventListener('change', (e) => {
-                console.log("File selected:", e.target.files.length > 0 ? e.target.files[0].name : "No file.");
-                
                 document.getElementById('qr-options-modal').classList.add('hidden');
                 document.getElementById('qr-options-modal').classList.remove('flex');
                 if (e.target.files[0]) processImageForQR(e.target.files[0]);
-                else console.error("File input change event triggered, but no file found.");
+                // Clear the file input after processing so the change event fires again if the same file is selected
+                e.target.value = ''; 
             });
             
             // Configurar el "pegado" de imagen
